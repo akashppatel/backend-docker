@@ -4,19 +4,24 @@ package com.sb.backend.controller;
 import com.sb.backend.model.GroceryItem;
 import com.sb.backend.repository.CustomItemRepository;
 import com.sb.backend.repository.ItemRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/grocery")
 
 public class GroceryController {
+
+    Logger logger = LoggerFactory.getLogger(GroceryController.class);
+
 
     @Autowired
     ItemRepository groceryItemRepo;
@@ -25,7 +30,7 @@ public class GroceryController {
     CustomItemRepository customRepo;
 
     @GetMapping("all")
-    public List<GroceryItem>  showAllGroceryItems() {
+    public List<GroceryItem> showAllGroceryItems() {
         List<GroceryItem> itemList;
 
         itemList = groceryItemRepo.findAll();
@@ -74,3 +79,4 @@ public class GroceryController {
     }
 
 }
+
