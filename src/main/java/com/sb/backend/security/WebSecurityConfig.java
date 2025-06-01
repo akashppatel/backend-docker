@@ -3,7 +3,9 @@ package com.sb.backend.security;
 import com.sb.backend.security.jwt.AuthEntryPointJwt;
 import com.sb.backend.security.jwt.AuthTokenFilter;
 import com.sb.backend.security.services.UserDetailsServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,8 +22,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 
+@Slf4j
 @Configuration
 //@EnableWebSecurity
 @EnableMethodSecurity
@@ -39,6 +44,9 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
+
+    @Value("${application.allowed.urls}")
+    String allowedUrls;
 
 //@Override
 //public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -63,6 +71,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        log.info("------ Allowed Urls: {}", Arrays.asList(allowedUrls));
         return authConfig.getAuthenticationManager();
     }
 
@@ -93,11 +102,15 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth ->
-                    auth
-                    .requestMatchers("/api/auth/**","/hello/public")
+                        auth.requestMatchers("/api/auth/**","/hello/public", "/v3/**","/swagger-ui/**")
+                      //auth.requestMatchers(allowedUrls)
+                     // .requestMatchers(allowedUrls)
                     .permitAll()
-                    .requestMatchers("/hello/**")
-                    .permitAll().anyRequest().authenticated()
+                    /*.requestMatchers("/api/auth/**")
+                    .permitAll()
+                    .requestMatchers("/hello/public")
+                    .permitAll()*/
+                    .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());
