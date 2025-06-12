@@ -23,7 +23,7 @@ jobs:
         run: |
           docker build -t backend .
           docker tag backend ghcr.io/akashppatel/backend
-          docker push ghcr.io/akashppatel/my-spring-boot-app
+          docker push ghcr.io/akashppatel/backend
 
 #    steps:
 #    - uses: actions/checkout@v4
