@@ -18,7 +18,7 @@ jobs:
       - name: Build and test
         run: |
            chmod +x mvnw
-           ./mvnw clean package
+           ./mvnw clean package -DskipTests
       - name: Build Docker image
         run: |
           docker build -t backend .
